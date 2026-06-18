@@ -17,6 +17,8 @@
 - **Batch Processing**: Process multiple files for quality reports
 - **Export**: FASTA, CSV, publication-quality PNG/SVG chromatogram images
 - **Modern UI**: Dark/light themes, dockable panels, synchronized sequence viewer
+- **NCBI BLAST**: In-application `blastn` search against selectable nucleotide databases (`core_nt`, `nt`, `refseq_rna`), running on a background thread so the UI stays responsive. Results are displayed in a sortable table (accession, description, query coverage, identity, E-value, bit score) with a pairwise alignment view and direct links to NCBI records. A contact email for NCBI can be saved in application settings.
+- **Forward + Reverse Consensus**: Quality-weighted consensus from a forward/reverse read pair. The reverse read is automatically reverse-complemented; the overlap is found by local alignment. Each consensus position is called from the higher-quality base, or an IUPAC ambiguity code when quality is equal. Assembly is gated on a minimum overlap identity threshold, and a clear diagnostic message is shown when the reads do not overlap.
 
 ## Architecture
 
@@ -34,22 +36,27 @@ chromaview/
 │   ├── quality_widget.py   # Phred score bar chart
 │   ├── file_browser.py     # Sidebar file explorer
 │   ├── dialogs.py          # Trim, compare, batch dialogs
+│   ├── blast_dialog.py     # NCBI BLAST search dialog
+│   ├── consensus_dialog.py # Forward+reverse consensus dialog
 │   └── theme.py            # Dark/light theme manager
 ├── analysis/       # Analysis algorithms
 │   ├── quality.py          # Quality filtering, trimming
 │   ├── peaks.py            # Peak detection and metrics
-│   └── mutation.py         # SNP detection, mismatch calling
+│   ├── mutation.py         # SNP detection, mismatch calling
+│   ├── blast.py            # NCBI BLAST integration (background thread)
+│   └── consensus.py        # Forward+reverse quality-weighted consensus
 ├── export/         # Output generators
 │   ├── fasta.py            # FASTA export
 │   ├── csv_export.py       # CSV export
 │   └── image.py            # Publication-quality image export
 ├── utils/          # Shared utilities
-│   └── helpers.py
 ├── tests/          # Unit tests
 │   ├── test_ab1_parser.py
 │   ├── test_models.py
 │   ├── test_quality.py
-│   └── test_sequence_ops.py
+│   ├── test_sequence_ops.py
+│   ├── test_blast.py
+│   └── test_consensus.py
 └── app.py          # Application entry point
 ```
 
@@ -63,7 +70,7 @@ chromaview/
 ### Install from source
 
 ```bash
-git clone https://github.com/yourname/chromaview.git
+git clone https://github.com/ifthikharzaman-eng/chromaview.git
 cd chromaview
 pip install -e .
 ```
@@ -81,6 +88,16 @@ python -m chromaview
 ```bash
 pip install -r requirements.txt
 ```
+
+### Standalone Windows executable
+
+A self-contained Windows `.exe` can be built with PyInstaller using the provided helper script:
+
+```bat
+build_windows.bat
+```
+
+The script regenerates the application icon, runs PyInstaller against `ChromaView.spec`, and writes the output to `dist\ChromaView\ChromaView.exe`.
 
 ## Usage
 
