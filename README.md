@@ -1,6 +1,6 @@
 # ChromaView — Sanger Sequencing Chromatogram Analyzer
 
-[![DOI](https://zenodo.org/badge/1248879359.svg)](https://doi.org/10.5281/zenodo.20740237)
+DOI: https://doi.org/10.5281/zenodo.20740237 
 
 **ChromaView** is a modern, open-source desktop application for visualizing, editing, and analyzing Sanger DNA sequencing chromatogram files. It provides functionality comparable to Chromas, FinchTV, and SnapGene's trace viewer, built with a clean Python stack.
 
